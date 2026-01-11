@@ -66,7 +66,7 @@ if (!isset($_SESSION['username'])) {
                 <!-- Dashboard -->
                 <li>
                     <a href="admin.php?page=dashboard"
-                        class="flex items-center gap-2 text-gray-300 hover:text-gray-400 transition duration-300 text-xl">
+                        class="flex items-center gap-2 text-gray-300 hover:text-gray-400 transition duration-300 text-[18px]">
                         Dashboard
                     </a>
                 </li>
@@ -74,15 +74,32 @@ if (!isset($_SESSION['username'])) {
                 <!-- Article -->
                 <li>
                     <a href="admin.php?page=article"
-                        class="flex items-center gap-2 text-gray-300 hover:text-gray-400 transition duration-300 text-xl">
+                        class="flex items-center gap-2 text-gray-300 hover:text-gray-400 transition duration-300 text-[18px]">
                         Article
+                    </a>
+                </li>
+
+                <!-- Gallery -->
+                <li>
+                    <a href="admin.php?page=gallery"
+                        class="flex items-center gap-2 text-gray-300 hover:text-gray-400 transition duration-300 text-[18px]">
+                        Gallery
+                    </a>
+                </li>
+
+
+                <!-- User -->
+                <li>
+                    <a href="admin.php?page=user"
+                        class="flex items-center gap-2 text-gray-300 hover:text-gray-400 transition duration-300 text-[18px]">
+                        User
                     </a>
                 </li>
 
                 <!-- USER DROPDOWN -->
                 <li class="relative group cursor-pointer z-50">
                     <button id="userMenuBtn"
-                        class="flex items-center gap-2 text-gray-300 font-semibold text-xl hover:text-gray-400 transition duration-300">
+                        class="flex items-center gap-2 text-gray-300 font-semibold text-[18px] hover:text-gray-400 transition duration-300">
                         <?= $_SESSION['username'] ?>
                         <i class="fa-solid fa-caret-down mt-1"></i>
                     </button>
@@ -110,6 +127,14 @@ if (!isset($_SESSION['username'])) {
                 <i class="fa-solid fa-file-lines"></i> Article
             </a>
 
+            <a href="admin.php?page=gallery" class="flex items-center gap-2 text-gray-700">
+                <i class="fa-solid fa-camera"></i> Gallery
+            </a>
+
+            <a href="admin.php?page=user" class="flex items-center gap-2 text-gray-700">
+                <i class="fa-solid fa-users"></i> User
+            </a>
+
             <a href="logout.php" class="flex items-center gap-2 text-red-600 font-semibold">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
             </a>
@@ -118,29 +143,43 @@ if (!isset($_SESSION['username'])) {
 
     <!-- CONTENT -->
     <!-- content begin -->
-    <section id="content" class="p-8">
-        <div class="max-w-6xl mx-auto">
+    <section id="content" class="px-3 sm:px-4 md:px-6 lg:px-8 py-6">
+        <div class="
+        max-w-6xl mx-auto
+        flex flex-col
+        lg:flex-row
+        gap-4 lg:gap-6
+    ">
 
-            <?php if (isset($_GET['page'])): ?>
+            <!-- CONTENT -->
+            <div class="w-full">
+                <?php if (isset($_GET['page'])): ?>
 
-                <h4 class="text-3xl font-semibold text-gray-700 pb-3 border-b border-red-300 mb-6">
-                    <?= ucfirst($_GET['page']) ?>
-                </h4>
+                    <h4 class="text-lg sm:text-xl md:text-2xl lg:text-3xl 
+                           font-semibold text-gray-700
+                           pb-2 border-b border-red-300 mb-4">
+                        <?= ucfirst($_GET['page']) ?>
+                    </h4>
 
-                <?php include($_GET['page'] . ".php"); ?>
+                    <?php include($_GET['page'] . ".php"); ?>
 
-            <?php else: ?>
+                <?php else: ?>
 
-                <h4 class="text-3xl font-semibold pb-3 border-b border-red-300 mb-6">
-                    Dashboard
-                </h4>
+                    <h4 class="text-lg sm:text-xl md:text-2xl lg:text-3xl 
+                           font-semibold
+                           pb-2 border-b border-red-300 mb-4">
+                        Dashboard
+                    </h4>
 
-                <?php include("dashboard.php"); ?>
+                    <?php include("dashboard.php"); ?>
 
-            <?php endif; ?>
+                <?php endif; ?>
+            </div>
 
         </div>
     </section>
+
+
 
     <!-- content end -->
 

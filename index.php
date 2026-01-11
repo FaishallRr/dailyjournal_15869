@@ -220,20 +220,26 @@ include("koneksi.php");
       </p>
     </div>
 
-    <div class="flex flex-wrap justify-center items-center gap-6 w-[80%]">
-      <img src="/img/1.jpg" alt="1"
-        class="w-40 h-80 object-cover rounded-xl hover:scale-105 transition-transform duration-300" />
-      <img src="/img/2.jpg" alt="2"
-        class="w-40 h-80 object-cover rounded-xl hover:scale-105 transition-transform duration-300" />
-      <img src="/img/3.jpg" alt="3"
-        class="w-40 h-80 object-cover rounded-xl hover:scale-105 transition-transform duration-300" />
-      <img src="/img/4.jpg" alt="4"
-        class="w-40 h-80 object-cover rounded-xl hover:scale-105 transition-transform duration-300" />
-      <img src="/img/5.jpg" alt="5"
-        class="w-40 h-80 object-cover rounded-xl hover:scale-105 transition-transform duration-300" />
-      <img src="/img/6.jpg" alt="6"
-        class="w-40 h-80 object-cover rounded-xl hover:scale-105 transition-transform duration-300" />
+    <?php
+
+    $gallery = $conn->query("
+    SELECT gambar 
+    FROM gallery 
+    ORDER BY tanggal DESC
+");
+    ?>
+
+    <div class="flex flex-wrap justify-center items-center gap-6 w-[80%] mx-auto">
+
+      <?php while ($row = $gallery->fetch_assoc()): ?>
+        <img src="img/gallery/<?= htmlspecialchars($row['gambar']) ?>" alt="Gallery" class="w-40 h-80 object-cover rounded-xl
+                   hover:scale-105
+                   transition-transform duration-300
+                   shadow-md" />
+      <?php endwhile; ?>
+
     </div>
+
   </div>
 
   <div class="bg-zinc-800 w-full min-h-screen text-white flex flex-col justify-center items-center py-20" id="schedule">

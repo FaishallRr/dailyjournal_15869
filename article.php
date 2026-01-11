@@ -1,279 +1,270 @@
-<div class="max-w-6xl mx-auto mb-[270px]">
+<?php
+include "koneksi.php";
+include "upload_foto.php";
+?>
 
-    <!-- Tombol Trigger Modal Tambah -->
-    <button type="button"
-        class="inline-flex items-center px-4 py-2 text-white bg-gray-600 hover:bg-gray-700 rounded-lg font-medium transition-all duration-300 mb-3"
-        onclick="openModalTambah()">
-        <i class="fa fa-plus mr-3"></i> Tambah Article
-    </button>
+<div class="max-w-6xl mx-auto mb-40">
 
-    <!-- Tabel Artikel -->
-    <div id="article_data">
-
+    <div class="mb-5">
+        <button onclick="openModalTambah()" class="inline-flex items-center gap-2
+        px-4 py-2 bg-zinc-700 text-white rounded-xl
+        text-sm font-medium hover:scale-[1.03] transition">
+            <span class="text-lg">＋</span>
+            Tambah Artikel
+        </button>
     </div>
 
-    <!-- Modal Tambah -->
-    <div id="modalTambah"
-        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 pointer-events-none transition-opacity duration-500 ease-in-out hidden">
-        <div
-            class="modal-content bg-white rounded-lg shadow-xl w-[30%] transform transition-all duration-500 scale-95 opacity-0">
-            <div class="flex justify-between items-center p-4 border-b">
-                <h1 class="text-xl font-bold text-gray-800">Tambah Article</h1>
-                <button type="button" class="text-xl text-gray-500 hover:text-gray-700 transition duration-300"
-                    onclick="closeModalTambah()">
-                    <i class="fa fa-times"></i>
+    <div id="article_data"></div>
+</div>
+
+
+
+<!-- ================= MODAL TAMBAH ================= -->
+<div id="modalTambah" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden
+            items-center justify-center z-50">
+    <div class="bg-white rounded-2xl
+            w-[80%] sm:w-full
+            max-w-lg
+            shadow-xl
+            animate-fadeIn">
+        <form method="post" enctype="multipart/form-data">
+            <div class="p-4 border-b flex justify-between">
+                <h2 class="font-bold text-[18px] mt-1 text-gray-600">Tambah Artikel</h2>
+                <button type="button" onclick="closeModalTambah()" class="w-9 h-9 flex items-center justify-center
+           rounded-full
+           bg-zinc-100 hover:bg-zinc-200
+           text-zinc-700 hover:text-zinc-900
+           transition">
+                    ✕
                 </button>
             </div>
-            <form method="post" action="" enctype="multipart/form-data">
-                <div class="p-6">
-                    <div class="mb-4">
-                        <label for="judul" class="block text-[15px] font-medium text-gray-700">Judul</label>
-                        <input type="text"
-                            class="form-control text-sm block w-full px-3 py-1.5 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
-                            name="judul" placeholder="Tuliskan Judul Artikel" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="isi" class="block text-[15px] font-medium text-gray-700">Isi</label>
-                        <textarea
-                            class="form-control text-sm block w-full px-3 py-1.5 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
-                            placeholder="Tuliskan Isi Artikel" name="isi" required></textarea>
-                    </div>
-                    <div class="mb-4">
-                        <label for="gambar" class="block text-[15px] font-medium text-gray-700">Gambar</label>
-                        <input type="file"
-                            class="form-control text-sm block w-full px-3 py-1.5 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
-                            name="gambar">
-                    </div>
-                </div>
-                <div class="flex justify-end items-center p-4 border-t">
-                    <button type="button"
-                        class="ml-2 px-3 py-1.5 rounded-xl text-[14px] text-gray-700 font-medium bg-gray-300 hover:bg-gray-400 transition duration-300"
-                        onclick="closeModalTambah()">Close</button>
-                    <input type="submit" value="Simpan" name="simpan"
-                        class="ml-2 px-3 py-1.5 rounded-xl text-[14px] text-white font-medium bg-zinc-700 hover:bg-zinc-800 transition duration-300">
-                </div>
-            </form>
-        </div>
+
+            <div class="p-4 space-y-3">
+                <input type="text" name="judul" required class="w-full border p-3 rounded-xl" placeholder="Judul">
+                <textarea name="isi" required class="w-full border p-3 rounded-xl h-[100px]"
+                    placeholder="Isi"></textarea>
+                <input type="file" name="gambar" class="ml-1">
+            </div>
+
+            <div class="p-4 border-t text-right">
+                <button name="simpan" class="px-4 py-2 bg-zinc-700 text-white rounded-xl text-center font-bold">
+                    Simpan
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
 
-<script>
-    function openModalTambah() {
-        const modal = document.getElementById('modalTambah');
-        const modalContent = modal.querySelector('.modal-content');
-        modal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-        modal.classList.add('opacity-100');
-        modalContent.classList.remove('scale-95', 'opacity-0');
-        modalContent.classList.add('scale-100', 'opacity-100');
-    }
+<!-- ================= MODAL EDIT & HAPUS ================= -->
+<?php
+$q = $conn->query("SELECT * FROM article");
+while ($row = $q->fetch_assoc()):
+    ?>
 
-    function closeModalTambah() {
-        const modal = document.getElementById('modalTambah');
-        const modalContent = modal.querySelector('.modal-content');
-        modal.classList.add('opacity-0', 'pointer-events-none');
-        modalContent.classList.add('scale-95', 'opacity-0');
+    <!-- EDIT -->
+    <div id="edit<?= $row['id'] ?>" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden
+            items-center justify-center z-50">
+        <div class="bg-white rounded-2xl
+            w-[80%] sm:w-full
+            max-w-lg
+            shadow-xl
+            animate-fadeIn">
+            <form method="post" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                <input type="hidden" name="gambar_lama" value="<?= $row['gambar'] ?>">
 
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 100);
-    }
+                <div class="p-4 border-b flex justify-between">
+                    <h2 class="font-bold text-[18px] mt-1 text-gray-600">Edit Artikel</h2>
+                    <button type="button" onclick="closeModalEdit('edit<?= $row['id'] ?>')" class="w-9 h-9 flex items-center justify-center
+           rounded-full
+           bg-zinc-100 hover:bg-zinc-200
+           text-zinc-700 hover:text-zinc-900
+           transition">✕</button>
+                </div>
 
-    //
-    //
+                <div class="p-4 space-y-3">
 
-    function openModalHapus(modalId) {
-        console.log("Mencoba membuka modal dengan ID:", modalId);
+                    <input type="text" name="judul" value="<?= htmlspecialchars($row['judul']) ?>"
+                        class="w-full border p-3 rounded-xl">
 
-        const modal = document.getElementById(modalId);
-        if (!modal) {
-            console.error(`Modal dengan ID ${modalId} tidak ditemukan.`);
-            return;
+                    <textarea name="isi"
+                        class="w-full border p-3 rounded-xl h-[100px]"><?= htmlspecialchars($row['isi']) ?></textarea>
+
+                    <?php if ($row['gambar']): ?>
+                        <div class="space-y-1">
+                            <p class="text-xs text-zinc-500">Gambar saat ini:</p>
+                            <img src="img/<?= $row['gambar'] ?>" class="w-full max-h-40 object-cover rounded-xl shadow border">
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="space-y-1">
+                        <p class="text-xs text-zinc-500">Ganti gambar (opsional):</p>
+                        <input type="file" name="gambar" class="w-full text-sm border rounded-lg p-2">
+                    </div>
+
+                </div>
+
+                <div class="p-4 border-t text-right">
+                    <button name="simpan" class="px-4 py-2 bg-green-600 text-white rounded-xl text-center font-bold">
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- HAPUS -->
+    <div id="hapus<?= $row['id'] ?>" class="fixed inset-0 z-50 hidden
+           flex items-center justify-center
+           bg-black/60 backdrop-blur-sm">
+
+        <div class="bg-white rounded-2xl
+            w-[80%] sm:w-full
+            max-w-md
+            p-6
+            shadow-2xl
+            animate-fadeIn">
+
+            <div class="flex items-start justify-between mb-4">
+                <h3 class="font-bold text-[18px] -mt-1 text-gray-600">
+                    Hapus Artikel
+                </h3>
+
+                <button onclick="closeModalHapus('hapus<?= $row['id'] ?>')" class="w-9 h-9 flex items-center justify-center
+           rounded-full
+           bg-zinc-100 hover:bg-zinc-200
+           text-zinc-700 hover:text-zinc-900
+           transition -mt-1">
+                    ✕
+                </button>
+            </div>
+
+            <div class="flex gap-3 items-start">
+                <div class="w-10 h-10 flex items-center justify-center
+            rounded-full
+            bg-red-100
+            text-red-600
+            text-lg
+            font-semibold">
+                    !
+                </div>
+
+
+                <div>
+                    <p class="text-[16px] text-zinc-700 mt-1">
+                        Apakah kamu yakin ingin menghapus artikel ini?
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" onclick="closeModalHapus('hapus<?= $row['id'] ?>')" class="px-4 py-2 text-sm
+                       rounded-xl
+                       border border-zinc-300
+                       text-zinc-700
+                       hover:bg-zinc-100
+                       transition">
+                    Batal
+                </button>
+
+                <form method="post">
+                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                    <input type="hidden" name="gambar" value="<?= $row['gambar'] ?>">
+
+                    <button name="hapus" class="px-4 py-2 text-sm
+                           rounded-xl
+                           bg-red-600 hover:bg-red-700
+                           text-white
+                           transition">
+                        Ya, Hapus
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+
+<?php endwhile; ?>
+
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(.95);
         }
 
-        const modalContent = modal.querySelector('.modal-content');
-
-        // ⬇️ INI YANG KURANG
-        modal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-        modal.classList.add('opacity-100');
-
-        modalContent.classList.remove('scale-95', 'opacity-0');
-        modalContent.classList.add('scale-100', 'opacity-100');
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
 
-    function closeModalHapus(modalId) {
-        const modal = document.getElementById(modalId);
-        const modalContent = modal.querySelector('.modal-content');
-
-        modal.classList.add('opacity-0', 'pointer-events-none');
-        modalContent.classList.add('scale-95', 'opacity-0');
-
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 500);
+    .animate-fadeIn {
+        animation: fadeIn .2s ease-out;
     }
-
-    //
-    //
-
-    function openModalEdit(id) {
-        const modal = document.getElementById(id);
-        const content = modal.querySelector('.modal-content');
-
-        modal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-        content.classList.remove('scale-95', 'opacity-0');
-    }
-
-    function closeModalEdit(id) {
-        const modal = document.getElementById(id);
-        const content = modal.querySelector('.modal-content');
-
-        modal.classList.add('opacity-0', 'pointer-events-none');
-        content.classList.add('scale-95', 'opacity-0');
-
-        setTimeout(() => modal.classList.add('hidden'), 300);
-    }
-</script>
+</style>
 
 
+<!-- ================= JAVASCRIPT ================= -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-    function load_data(hlm = 1) {
-        $.ajax({
-            url: "article_data.php",
-            type: "POST",
-            data: { hlm: hlm },
-            beforeSend: function () {
-                $('#article_data').html(
-                    '<p class="text-center py-4 text-gray-500">Loading...</p>'
-                );
-            },
-            success: function (data) {
-                $('#article_data').html(data);
-            },
-            error: function () {
-                $('#article_data').html(
-                    '<p class="text-center text-red-500">Gagal memuat data</p>'
-                );
-            }
+    function load_data(page = 1) {
+        $.post("article_data.php", { hlm: page }, function (data) {
+            $("#article_data").html(data);
         });
     }
+    $(document).ready(() => load_data());
 
-    $(document).ready(function () {
-        load_data(1);
-    });
+    function openModalTambah() { $("#modalTambah").removeClass("hidden").addClass("flex"); }
+    function closeModalTambah() { $("#modalTambah").addClass("hidden").removeClass("flex"); }
+    function openModalEdit(id) { $("#" + id).removeClass("hidden").addClass("flex"); }
+    function closeModalEdit(id) { $("#" + id).addClass("hidden").removeClass("flex"); }
+    function openModalHapus(id) { $("#" + id).removeClass("hidden").addClass("flex"); }
+    function closeModalHapus(id) { $("#" + id).addClass("hidden").removeClass("flex"); }
 </script>
-
 
 
 <?php
-include "upload_foto.php";
-
-//jika tombol simpan diklik
+/* SIMPAN / UPDATE */
 if (isset($_POST['simpan'])) {
     $judul = $_POST['judul'];
     $isi = $_POST['isi'];
-    $tanggal = date("Y-m-d H:i:s");
-    $username = $_SESSION['username'];
-    $gambar = '';
-    $nama_gambar = $_FILES['gambar']['name'];
+    $tgl = date("Y-m-d H:i:s");
+    $user = $_SESSION['username'];
+    $gambar = $_POST['gambar_lama'] ?? '';
 
-    //jika ada file yang dikirim  
-    if ($nama_gambar != '') {
-        //panggil function upload_foto untuk cek spesifikasi file yg dikirimkan user
-        //function ini memiliki 2 keluaran yaitu status dan message
-        $cek_upload = upload_foto($_FILES["gambar"]);
-
-        //cek status true/false
-        if ($cek_upload['status']) {
-            //jika true maka message berisi nama file gambar
-            $gambar = $cek_upload['message'];
-        } else {
-            //jika true maka message berisi pesan error, tampilkan dalam alert
-            echo "<script>
-                alert('" . $cek_upload['message'] . "');
-                document.location='admin.php?page=article';
-            </script>";
-            die;
-        }
+    if (!empty($_FILES['gambar']['name'])) {
+        $up = upload_foto($_FILES['gambar']);
+        if ($up['status'])
+            $gambar = $up['message'];
     }
 
-    //cek apakah ada id yang dikirimkan dari form
-    if (isset($_POST['id'])) {
-        //jika ada id, lakukan update data dengan id tersebut
-        $id = $_POST['id'];
-
-        if ($nama_gambar == '') {
-            //jika tidak ganti gambar
-            $gambar = $_POST['gambar_lama'];
-        } else {
-            //jika ganti gambar, hapus gambar lama
-            unlink("img/" . $_POST['gambar_lama']);
-        }
-
-        $stmt = $conn->prepare("UPDATE article 
-                                SET 
-                                judul =?,
-                                isi =?,
-                                gambar = ?,
-                                tanggal = ?,
-                                username = ?
-                                WHERE id = ?");
-
-        $stmt->bind_param("sssssi", $judul, $isi, $gambar, $tanggal, $username, $id);
-        $simpan = $stmt->execute();
+    if (!empty($_POST['id'])) {
+        $stmt = $conn->prepare(
+            "UPDATE article SET judul=?, isi=?, gambar=?, tanggal=?, username=? WHERE id=?"
+        );
+        $stmt->bind_param("sssssi", $judul, $isi, $gambar, $tgl, $user, $_POST['id']);
     } else {
-        //jika tidak ada id, lakukan insert data baru
-        $stmt = $conn->prepare("INSERT INTO article (judul,isi,gambar,tanggal,username)
-                                VALUES (?,?,?,?,?)");
-
-        $stmt->bind_param("sssss", $judul, $isi, $gambar, $tanggal, $username);
-        $simpan = $stmt->execute();
+        $stmt = $conn->prepare(
+            "INSERT INTO article (judul,isi,gambar,tanggal,username) VALUES (?,?,?,?,?)"
+        );
+        $stmt->bind_param("sssss", $judul, $isi, $gambar, $tgl, $user);
     }
-
-    if ($simpan) {
-        echo "<script>
-            alert('Simpan data sukses');
-            document.location='admin.php?page=article';
-        </script>";
-    } else {
-        echo "<script>
-            alert('Simpan data gagal');
-            document.location='admin.php?page=article';
-        </script>";
-    }
-
+    $stmt->execute();
     $stmt->close();
-    $conn->close();
+    echo "<script>location='admin.php?page=article'</script>";
 }
 
-//jika tombol hapus diklik
+/* HAPUS */
 if (isset($_POST['hapus'])) {
-    $id = $_POST['id'];
-    $gambar = $_POST['gambar'];
-
-    if ($gambar != '') {
-        //hapus file gambar
-        unlink("img/" . $gambar);
-    }
-
-    $stmt = $conn->prepare("DELETE FROM article WHERE id =?");
-
-    $stmt->bind_param("i", $id);
-    $hapus = $stmt->execute();
-
-    if ($hapus) {
-        echo "<script>
-            alert('Hapus data sukses');
-            document.location='admin.php?page=article';
-        </script>";
-    } else {
-        echo "<script>
-            alert('Hapus data gagal');
-            document.location='admin.php?page=article';
-        </script>";
-    }
-
+    if ($_POST['gambar'])
+        unlink("img/" . $_POST['gambar']);
+    $stmt = $conn->prepare("DELETE FROM article WHERE id=?");
+    $stmt->bind_param("i", $_POST['id']);
+    $stmt->execute();
     $stmt->close();
-    $conn->close();
+    echo "<script>location='admin.php?page=article'</script>";
 }
 ?>
