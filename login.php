@@ -11,20 +11,18 @@ $notif = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $username = htmlspecialchars($_POST['user'] ?? '');
-    $inputPass = htmlspecialchars($_POST['pass'] ?? ''); // password asli untuk ditampilkan
-    $password = md5($inputPass); // enkripsi md5 untuk database
+    $username = trim($_POST['user'] ?? '');
+    $inputPass = $_POST['pass'] ?? '';
 
-    $stmt = $conn->prepare("SELECT username FROM user WHERE username=? AND password=?");
-    $stmt->bind_param("ss", $username, $password);
+    // Ambil data user berdasarkan username
+    $stmt = $conn->prepare("SELECT username, password FROM user WHERE username=?");
+    $stmt->bind_param("s", $username);
     $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
 
-    $hasil = $stmt->get_result();
-    $row = $hasil->fetch_array(MYSQLI_ASSOC);
-
-    if (!empty($row)) {
-
-        $_SESSION['username'] = $row['username'];
+    if ($user && password_verify($inputPass, $user['password'])) {
+        $_SESSION['username'] = $user['username'];
 
         $notif = "
         <div class='mt-6 p-4 bg-green-100 text-green-800 rounded-xl shadow text-center space-y-1 animate-fadeIn'>

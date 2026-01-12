@@ -1,5 +1,35 @@
 <?php
+session_start();
 include("koneksi.php");
+
+// Pastikan user sudah login
+if (!isset($_SESSION['username'])) {
+  header("Location: login.php");
+  exit;
+}
+
+$username = $_SESSION['username'];
+
+// Ambil data user dari database
+$stmt = $conn->prepare("SELECT username, profile FROM user WHERE username=?");
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+$stmt->close();
+
+// Jika tidak ada data, logout
+if (!$user) {
+  session_destroy();
+  header("Location: login.php");
+  exit;
+}
+
+// Tentukan path foto profil
+$profile_img = $user['profile'] && file_exists("img/profile/" . $user['profile'])
+  ? "img/profile/" . $user['profile']
+  : "img/profile.png"; // default jika tidak ada
+$nama = htmlspecialchars($user['username']);
 ?>
 
 <!DOCTYPE html>
@@ -411,50 +441,32 @@ include("koneksi.php");
   </div>
 
   <div class="bg-zinc-900 w-full min-h-screen text-white flex flex-col justify-center items-center py-20" id="profile">
-    <!-- Bagian judul boleh ikut berubah -->
     <div class="flex flex-col gap-4 w-[60%] text-center mb-20">
-      <p class="font-bold text-3xl sm:text-4xl">Profile - Owner</p>
+      <p class="font-bold text-3xl sm:text-4xl">Profile - User</p>
     </div>
 
-    <!-- Bagian isi profil (tidak berubah tema) -->
     <div
-      class="no-theme-change flex flex-col md:flex-row items-center bg-gradient-to-br from-[#1f1f1f] to-[#2a2a2a] rounded-3xl shadow-2xl p-8 md:p-12 w-[90%] md:w-[70%] lg:w-[55%] hover:shadow-zinc-700/50 transition-all duration-300">
-      <!-- Foto Profil -->
-      <div class="flex-shrink-0 mb-8 md:mb-0 md:mr-10 relative group">
+      class="no-theme-change flex flex-col items-center bg-gradient-to-br from-[#1f1f1f] to-[#2a2a2a] rounded-3xl shadow-2xl p-8 md:p-12 w-[90%] md:w-[70%] lg:w-[55%] hover:shadow-zinc-700/50 transition-all duration-300">
+
+      <div class="relative mb-6 group">
         <div
           class="absolute inset-0 bg-[#3a3a3a] rounded-full blur-xl opacity-40 group-hover:opacity-60 transition duration-300">
         </div>
-        <img src="./img/profile.png" alt="Foto Owner"
+        <img src="<?= $profile_img ?>" alt="Foto Profil"
           class="relative w-44 h-44 rounded-full object-cover border-4 border-[#444] shadow-lg group-hover:scale-105 transition-transform duration-300" />
       </div>
 
-      <!-- Informasi Profil -->
-      <div class="text-center md:text-left space-y-3 text-gray-300">
+      <div class="text-center space-y-3 text-gray-300 w-full flex flex-col items-center">
         <h2 class="text-3xl font-bold tracking-wide">
-          Faishal Rasyid Rusianto
+          <?= $nama ?>
         </h2>
-        <p class="text-gray-400 mb-5 text-lg">
-          Owner Villa & Website
-          <span class="text-blue-400">The Strand Booking</span>
+        <p class="text-gray-400">
+          @<?= htmlspecialchars($user['username']) ?>
         </p>
-
-        <div class="space-y-2 text-base">
-          <p>
-            <span class="font-semibold text-gray-300">📧 Email:</span>
-            faishalrasyid@example.com
-          </p>
-          <p>
-            <span class="font-semibold text-gray-300">📱 Telepon:</span>
-            +62 812 3456 7890
-          </p>
-          <p>
-            <span class="font-semibold text-gray-300">📍 Alamat:</span>
-            Jl. Diponegoro No. 45, Semarang
-          </p>
-        </div>
       </div>
     </div>
   </div>
+
 
   <div class="bg-zinc-200 w-full py-20 text-white flex justify-center">
     <div class="flex flex-col md:flex-row justify-between items-center w-[90%] max-w-screen-lg">
