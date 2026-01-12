@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 11 Jan 2026 pada 10.46
+-- Waktu pembuatan: 12 Jan 2026 pada 05.04
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.4.2
 
@@ -89,12 +89,12 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `password`, `profile`) VALUES
-(1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', 'user_1768121030.jpg'),
 (2, 'Faishal ', '$2y$12$3HQRbC50QEWlSqKeZdxAVO9S9NBrjA0aCK0K.EBluboYzoc9QG6..', 'user_1768121074.png'),
 (4, 'Rangga', '$2y$12$WzQCtoC9ucIQxBf6HIVp7uLRN93BhPH7hHpUNbgF3lq3WXc/JlMrO', 'user_1768121131.jpeg'),
 (5, 'sahal', '$2y$12$0udcstLU9I74xr1qqkoLsehU.paKeFiHT4vo57N6Um9hmLH.wBXIy', 'user_1768121169.jpeg'),
 (6, 'Ardhi', '$2y$12$vpRr.9T.oXPqFio9tXaHDuHDxBTubf3Hvf2zCJyFdCU8fJKecIx02', 'user_1768121205.jpg'),
-(7, 'danny', '$2y$12$OBffnT8eLpE5p7EpIUmMQOrtjah4xFII5gQCMjDLddMQfi8VMZIXC', 'user_1768121388.jpeg');
+(7, 'danny', '$2y$12$OBffnT8eLpE5p7EpIUmMQOrtjah4xFII5gQCMjDLddMQfi8VMZIXC', 'user_1768121388.jpeg'),
+(9, 'admin', '$2y$12$zrxnUrxu/drYs.vRTCCxKumnVV4HRCevuoCbYVl0K1PHRq6fBs46m', 'user_1768188903.png');
 
 --
 -- Indexes for dumped tables
@@ -126,19 +126,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT untuk tabel `article`
 --
 ALTER TABLE `article`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT untuk tabel `gallery`
 --
 ALTER TABLE `gallery`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
